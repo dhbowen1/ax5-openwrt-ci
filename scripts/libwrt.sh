@@ -7,8 +7,9 @@ sed -i 's/192.168.1.1/192.168.88.1/g' package/base-files/files/bin/config_genera
 sed -i -e "s/set system\.@system\[-1\]\.hostname='LibWrt'/set system.@system[-1].hostname='Oyyl_Router'/" package/base-files/files/bin/config_generate
 sed -i -e "/add_list system.ntp.server='ntp.ntsc.ac.cn'/d" package/base-files/files/bin/config_generate
 sed -i -e "/add_list system.ntp.server='cn.ntp.org.cn'/d" package/base-files/files/bin/config_generate
-sed -i 's/^root:::0:99999:7:::/#&/' package/base-files/files/etc/shadow
-sed -i '/^#root:::0:99999:7:::/a\root:$5$xmxpvLvUA0puov/Q$8VyXs7lx90md2yVksUedqKP5JyCQzpU7wY8JyqQv9e/:20389:0:99999:7:::' package/base-files/files/etc/shadow
+MYPASS='password'
+MYHASH=$(openssl passwd -5 -salt "$(openssl rand -hex 8)" "$MYPASS")
+sed -i "s|^root:.*|root:${MYHASH}:20389:0:99999:7:::|" package/base-files/files/etc/shadow
 # 移除 openwrt feeds 自带的核心库
 rm -rf feeds/packages/net/{xray-core,v2ray-geodata,sing-box,chinadns-ng,dns2socks,hysteria,ipt2socks,microsocks,naiveproxy,shadowsocks-libev,shadowsocks-rust,shadowsocksr-libev,simple-obfs,tcping,trojan-plus,tuic-client,v2ray-plugin,xray-plugin,geoview,shadow-tls}
 git clone https://github.com/Openwrt-Passwall/openwrt-passwall-packages package/passwall/passwall-packages
